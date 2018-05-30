@@ -8,7 +8,7 @@ method = "DBSCAN"
 from TCRclust import *
 
 from pt_tcr_distances import *
-from vj_distances import vdist,jdist
+from vj_distances import vdist,jdist,levenshteinDistance
 from trm_distances import compareTrimer, trimercounts
 from bm_distances import compareDimer, dimercounts
 from profile_distances import profile_distance_allprop
@@ -16,10 +16,10 @@ from profile_distances import profile_distance_allprop
 datadir = "../data/"
 
 calcdir = "../results/Distances/"
-recalculate = True
+recalculate = False
 
-root = "Dash"
-#root = "VDJ"
+#root = "Dash"
+root = "VDJ"
 
 def distanceTrimer (firstrec, secrec, cdr3 = "CDR3"):
     return compareTrimer(firstrec[cdr3],secrec[cdr3])
@@ -38,6 +38,9 @@ def compareLength (firstrec, secrec, cdr3 = "CDR3"):
     
 def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
     return vdist(firstrec['Vgene'],secrec['Vgene'])+jdist(firstrec['Jgene'],secrec['Jgene'])
+    
+def distanceLvsh(firstrec, secrec, cdr3 = "CDR3"):
+    return levenshteinDistance(firstrec[cdr3],secrec[cdr3])
 
 
 
@@ -51,9 +54,9 @@ data = pd.read_table(datadir+file)
 #Figure directory
 figdir = "../results/"+method+"/"+root+"/singlethreshold/"
 
-methodsVal = {"Length": 0.5,"Trimer": 0.34,"Dimer": 0.23,"GapAlign": 18,"Profile":1,"VJedit":0.408}
-methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile,"VJedit":distanceVJ}
-colordict = {"Length":"black","Trimer": 'tab:blue',"Dimer": 'tab:cyan',"GapAlign": 'tab:orange',"Profile":'tab:green',"VJedit": 'tab:brown',"All":'tab:red'}
+methodsVal = {"Length": 0.5,"Trimer": 0.34,"Dimer": 0.23,"GapAlign": 18,"Profile":1,"VJedit":0.408,"Levenshtein":1}
+methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile,"VJedit":distanceVJ, "Levenshtein": distanceLvsh}
+colordict = {"Length":"black","Trimer": 'tab:blue',"Dimer": 'tab:cyan',"GapAlign": 'tab:orange',"Profile":'tab:green',"VJedit": 'tab:brown',"Levenshtein":'tab:red'}
 
 
 resultsMethods = {}

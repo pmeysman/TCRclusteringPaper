@@ -8,15 +8,15 @@ method = "DBSCAN"
 from TCRclust import *
 
 from pt_tcr_distances import *
-from vj_distances import vdist,jdist
+from vj_distances import vdist,jdist,levenshteinDistance
 from trm_distances import compareTrimer, trimercounts
 from bm_distances import compareDimer, dimercounts
 from profile_distances import profile_distance_allprop
 
 datadir = "../data/"
 
-root = "Dash"
-#root = "VDJ"
+#root = "Dash"
+root = "VDJ"
 
 recalculate = True
 
@@ -47,9 +47,14 @@ def compareLength (firstrec, secrec, cdr3 = "CDR3"):
     
 def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
     return vdist(firstrec['V gene'],secrec['V gene'])+jdist(firstrec['J gene'],secrec['J gene'])
+    
+def distanceLvsh(firstrec, secrec, cdr3 = "CDR3"):
+    return levenshteinDistance(firstrec[cdr3],secrec[cdr3])
 
 
-methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile} #,"VJedit":distanceVJ,"All": distanceAll}
+colordict = {"Length":"black","Trimer": 'tab:blue',"Dimer": 'tab:cyan',"GapAlign": 'tab:orange',"Profile":'tab:green',"VJedit": 'tab:brown',"Levenshtein":'tab:red'}
+
+methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile,"VJedit":distanceVJ, "Levenshtein": distanceLvsh}
 
 
 

@@ -9,7 +9,7 @@ method = "DBSCAN"
 from TCRclust import *
 
 from pt_tcr_distances import *
-from vj_distances import vdist,jdist
+from vj_distances import vdist,jdist,levenshteinDistance
 from trm_distances import compareTrimer, trimercounts
 from bm_distances import compareDimer, dimercounts
 from profile_distances import profile_distance_allprop, profile_distance_allprop_realign
@@ -17,7 +17,7 @@ from profile_distances import profile_distance_allprop, profile_distance_allprop
 datadir = "../data/"
 
 calcdir = "../results/Distances/"
-recalculate = True
+recalculate = False
 
 #Choose dataset to use from ../data
 #root is also used as the directory in the results folder to group all results from the same dataset
@@ -55,14 +55,17 @@ def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
 def compareLength (firstrec, secrec, cdr3 = "CDR3"):
     return abs(len(firstrec[cdr3]) - len(secrec[cdr3]))
     
+def distanceLvsh(firstrec, secrec, cdr3 = "CDR3"):
+    return levenshteinDistance(firstrec[cdr3],secrec[cdr3])
+    
 
 #Color definitions
 #If you add a new method, add a new color here!
-colordict = {"Length":"black","Trimer": 'tab:blue',"Dimer": 'tab:cyan',"GapAlign": 'tab:orange',"Profile":'tab:green',"VJedit": 'tab:brown',"All":'tab:red'}
+colordict = {"Length":"black","Trimer": 'tab:blue',"Dimer": 'tab:cyan',"GapAlign": 'tab:orange',"Profile":'tab:green',"VJedit": 'tab:brown',"Levenshtein":'tab:red'}
 
 #Method names and function assignments
 #Adding any new methods will automatically be used in the figure
-methods = {"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile,"VJedit": distanceVJ}
+methods = {"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile,"VJedit": distanceVJ, "Levenshtein": distanceLvsh}
 
 
 
