@@ -7,7 +7,7 @@ import scipy as sp
 from TCRclust import *
 
 from pt_tcr_distances import *
-from vj_distances import vdist,jdist
+from vj_distances import vdist,jdist,levenshteinDistance
 from trm_distances import compareTrimer, trimercounts
 from bm_distances import compareDimer, dimercounts
 from profile_distances import profile_distance_allprop
@@ -15,10 +15,10 @@ from profile_distances import profile_distance_allprop
 datadir = "../data/"
 calcdir = "../results/Distances/"
 
-recalculate = True
+recalculate = False
 
-root = "Dash"
-#root = "VDJ"
+#root = "Dash"
+root = "VDJ"
 
 file = root+"_known_dataset.txt"
 
@@ -39,6 +39,9 @@ def compareLength (firstrec, secrec, cdr3 = "CDR3"):
     
 def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
     return vdist(firstrec['V gene'],secrec['V gene'])+jdist(firstrec['J gene'],secrec['J gene'])
+    
+def distanceLvsh(firstrec, secrec, cdr3 = "CDR3"):
+    return levenshteinDistance(firstrec[cdr3],secrec[cdr3])
 
 
 
@@ -46,9 +49,10 @@ def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
 data = pd.read_table(datadir+file)
 
 #Figure directory
-figdir = "../results/Distances/"+root+"/test/"
+figdir = "../results/Distances/"+root+"/"
 
-methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile, "VJedit":distanceVJ}
+methods = {"Length": compareLength,"Trimer": distanceTrimer,"Dimer": distanceDimer,"GapAlign": distancePT,"Profile":distanceProfile, "VJedit":distanceVJ, "Levenshtein":distanceLvsh}
+
 
 for methodName in methods:
     print("Using metric "+methodName)
@@ -93,10 +97,10 @@ for methodName in methods:
                         
                         #print('...'+epitopeSec+" ("+str(len(Clust.tcrdata.loc[epitopeSecIndex].index))+")")
                 
-                        distance = weighted_cdr3_distance(epitopePrime, epitopeSec, default_distance_params)
-                        #distance = len(Clust.tcrdata.loc[epitopePrimeIndex].index)
-                        #if(len(Clust.tcrdata.loc[epitopeSecIndex].index) > distance):
-                        #    distance = len(Clust.tcrdata.loc[epitopeSecIndex].index)
+                        #distance = weighted_cdr3_distance(epitopePrime, epitopeSec, default_distance_params)
+                        distance = len(Clust.tcrdata.loc[epitopePrimeIndex].index)
+                        if(len(Clust.tcrdata.loc[epitopeSecIndex].index) > distance):
+                            distance = len(Clust.tcrdata.loc[epitopeSecIndex].index)
                         #print(distance)
                 
                         subDist = Clust.dist.loc[np.where(epitopePrimeIndex)[0]][np.where(epitopeSecIndex)[0]].values
@@ -127,16 +131,16 @@ for methodName in methods:
                         c = c+1
                 
     plt.scatter(results["epiDist"], results["cdr3Dist"], c=results["intraDist"])
-    plt.xlabel('Epitope distance')
-    #plt.xlabel('Number of distinct TCRs binding the epitope')
+    #plt.xlabel('Epitope distance')
+    plt.xlabel('Number of distinct TCRs binding the epitope')
     plt.ylabel('CDR3 distance')
     
     pr, pval = sp.stats.spearmanr(results["epiDist"], results["cdr3Dist"])
     
     plt.title('Correlation: '+str(round(pr,2))+' (P-val = '+str('{:0.3e}'.format(pval))+')')
     
-    plt.savefig(figdir+"epitope_allclasses_median_density_"+methodName+".pdf")
-    #plt.savefig(figdir+"records_allclasses_median_density_"+methodName+".pdf")
+    #plt.savefig(figdir+"epitope_allclasses_median_density_"+methodName+".pdf")
+    plt.savefig(figdir+"records_allclasses_median_density_"+methodName+".pdf")
     plt.close()
     
     mhcstats, mhcpval = sp.stats.mannwhitneyu(results[results['sameMHC'] == 1]['cdr3Dist'],results[results['sameMHC'] == 0]['cdr3Dist'])
