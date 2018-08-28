@@ -114,8 +114,8 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["rnd_acc"],'.',label = "Random_"+methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
-plt.ylabel("Accuracy")
+plt.xlabel("Retention")
+plt.ylabel("Consistency")
 plt.savefig(figdir+"acc_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
 
@@ -124,7 +124,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["rnd_chi-stat"],'.',label = "Random_"+methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Chi test statistic")
 plt.savefig(figdir+"chi-stat_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -134,7 +134,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["rnd_log-chi-pval"],'.',label = "Random_"+methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Log Chi-squared P-value")
 plt.savefig(figdir+"log-chi-pval_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -144,7 +144,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["rnd_ent"],'.',label = "Random_"+methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Entropy")
 plt.savefig(figdir+"ent_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -154,8 +154,8 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["rnd_prec"],'.',label = "Random_"+methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
-plt.ylabel("Precision")
+plt.xlabel("Retention")
+plt.ylabel("Purity")
 plt.savefig(figdir+"prec_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
 
@@ -163,7 +163,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["tot"],resultsMethods[methodName]["cl"],label=methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Clusters")
 plt.savefig(figdir+"cl_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()

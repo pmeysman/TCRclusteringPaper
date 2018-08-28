@@ -45,19 +45,19 @@ def distanceDimer (firstrec, secrec, cdr3 = "CDR3"):
 
 def distancePT (firstrec, secrec, cdr3 = "CDR3"):
     return weighted_cdr3_distance( firstrec[cdr3], secrec[cdr3], default_distance_params)
-    
+
 def distanceProfile (firstrec, secrec, cdr3 = "CDR3"):
     return profile_distance_allprop(firstrec[cdr3],secrec[cdr3])
-    
+
 def distanceVJ (firstrec, secrec, cdr3 = "CDR3"):
     return vdist(firstrec['V gene'],secrec['V gene'])+jdist(firstrec['J gene'],secrec['J gene'])
-    
+
 def compareLength (firstrec, secrec, cdr3 = "CDR3"):
     return abs(len(firstrec[cdr3]) - len(secrec[cdr3]))
-    
+
 def distanceLvsh(firstrec, secrec, cdr3 = "CDR3"):
     return levenshteinDistance(firstrec[cdr3],secrec[cdr3])
-    
+
 
 #Color definitions
 #If you add a new method, add a new color here!
@@ -78,12 +78,12 @@ resultsMethods = {}
 for methodName in methods:
     print("Using metric "+methodName)
     Clust = TCRclust(data)
-    
+
     if(recalculate):
         Clust.calc_dist(methods[methodName])
     else:
         Clust.read_dist(calcdir + root + "/" + methodName + "_distmat.txt")
-        
+
     res_columns = ("cl","rec","chi-stat","log-chi-pval","acc","ent","prec","rnd_chi-stat","rnd_log-chi-pval","rnd_acc","rnd_ent","rnd_prec")
     results = pd.DataFrame(columns=res_columns)
 
@@ -103,7 +103,7 @@ for methodName in methods:
         rnd_ent = Clust.rnd_entropy
         rnd_prec = Clust.rnd_prec
         results.loc[i] = [Clust.conf_mat.shape[1],Clust.conf_mat.values.sum()/Clust.size,chi[0],-np.log(chi[1]),acc,ent,prec,rnd_chi[0],-np.log(rnd_chi[1]),rnd_acc,rnd_ent,rnd_prec]
-    
+
     bestChiEpsfract = results["log-chi-pval"].idxmax()
     if(method == "DBSCAN"):
         Clust.cluster_dbscan(bestChiEpsfract)
@@ -112,7 +112,7 @@ for methodName in methods:
     Clust.calc_confmat()
     print(Clust.conf_mat)
     resultsMethods[methodName] = results
-    
+
 
 #Make tons of plots
 
@@ -121,8 +121,8 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["rnd_acc"],label = "Random_"+methodName,linestyle='--', color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
-plt.ylabel("Accuracy")
+plt.xlabel("Retention")
+plt.ylabel("Consistency")
 plt.savefig(figdir+"acc_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
 
@@ -131,7 +131,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["rnd_chi-stat"],label = "Random_"+methodName,linestyle='--', color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Chi test statistic")
 plt.savefig(figdir+"chi-stat_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -141,7 +141,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["rnd_log-chi-pval"],label = "Random_"+methodName,linestyle='--', color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Log Chi-squared P-value")
 plt.savefig(figdir+"log-chi-pval_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -151,7 +151,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["rnd_ent"],label = "Random_"+methodName,linestyle='--', color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Entropy")
 plt.savefig(figdir+"ent_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
@@ -161,8 +161,8 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["rnd_prec"],label = "Random_"+methodName,linestyle='--', color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
-plt.ylabel("Precision")
+plt.xlabel("Retention")
+plt.ylabel("Purity")
 plt.savefig(figdir+"prec_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()
 
@@ -170,7 +170,7 @@ for methodName in methods:
     plt.plot(resultsMethods[methodName]["rec"],resultsMethods[methodName]["cl"],label=methodName, color=colordict[methodName])
 
 lgd = plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("Recall")
+plt.xlabel("Retention")
 plt.ylabel("Clusters")
 plt.savefig(figdir+"cl_comparison.pdf", bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.close()

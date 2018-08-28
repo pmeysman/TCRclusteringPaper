@@ -81,7 +81,8 @@ for methodName in methods:
         matchLoc = Clust.tcrdata[Clust.cdr3].str.len() == l + Clust.tcrdata[Clust.cdr3].str.len().min()
         if(len(np.where(matchLoc)[0])> 0):
             plt.scatter(distPCA[np.where(matchLoc)[0], 0], distPCA[np.where(matchLoc)[0], 1], color=next(colors))
-    
+    plt.xlabel('PC1')
+    plt.ylabel('PC2')
     plt.savefig(figdir+methodName+"_pca_length.pdf")
     plt.close()
     
